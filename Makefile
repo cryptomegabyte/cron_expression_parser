@@ -13,3 +13,11 @@ clean:
 docs:
 	python -m pydoc -w src
 
+lint:
+	flake8 src
+
+autofix:
+	autoflake8 --in-place --recursive src
+
+format:
+	black src

@@ -4,3 +4,9 @@ tabulate
 
 # Testing libraries
 pytest
+
+# Linting
+pre-commit
+autoflake8
+black
+flake8
