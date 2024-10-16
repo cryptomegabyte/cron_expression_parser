@@ -3,10 +3,11 @@ import sys
 from tabulate import tabulate
 from src.cron_parser.parser import CronParser
 
+
 def main():
     try:
-        parser = argparse.ArgumentParser(description='Cron Expression Parser')
-        parser.add_argument('cron_string', help='Cron string to parse')
+        parser = argparse.ArgumentParser(description="Cron Expression Parser")
+        parser.add_argument("cron_string", help="Cron string to parse")
         args = parser.parse_args()
 
         cron_parser = CronParser(args.cron_string)
@@ -26,6 +27,7 @@ def main():
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

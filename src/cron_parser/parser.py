@@ -1,6 +1,7 @@
 import sys
 from typing import Dict, List
 
+
 class CronParser:
     def __init__(self, cron_string: str):
         try:
@@ -27,7 +28,7 @@ class CronParser:
     def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
         if field == "*":
             return [str(i) for i in range(min_value, max_value + 1)]
-    
+
         if "/" in field:
             if field.startswith("*"):
                 _, step = field.split("/")
@@ -38,17 +39,17 @@ class CronParser:
                 value = int(value)
                 step = int(step)
                 return [str(i) for i in range(value, max_value + 1, step)]
-    
+
         if "-" in field:
             start, end = field.split("-")
             start = int(start)
             end = int(end)
             return [str(i) for i in range(start, end + 1)]
-    
+
         if "," in field:
             values = field.split(",")
             return [value for value in values if min_value <= int(value) <= max_value]
-    
+
         try:
             value = int(field)
             if value < min_value or value > max_value:

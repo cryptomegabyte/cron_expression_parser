@@ -1,6 +1,7 @@
 import unittest
 from src.cron_parser.parser import CronParser
 
+
 class TestCronParser(unittest.TestCase):
     def test_parse_fields(self):
         cron_string = "* * * * * /usr/bin/find"
@@ -9,7 +10,9 @@ class TestCronParser(unittest.TestCase):
 
         self.assertEqual(expanded_fields["minute"], [str(i) for i in range(60)])
         self.assertEqual(expanded_fields["hour"], [str(i) for i in range(24)])
-        self.assertEqual(expanded_fields["day_of_month"], [str(i) for i in range(1, 32)])
+        self.assertEqual(
+            expanded_fields["day_of_month"], [str(i) for i in range(1, 32)]
+        )
         self.assertEqual(expanded_fields["month"], [str(i) for i in range(1, 13)])
         self.assertEqual(expanded_fields["day_of_week"], [str(i) for i in range(7)])
         self.assertEqual(expanded_fields["command"], "/usr/bin/find")
@@ -46,6 +49,7 @@ class TestCronParser(unittest.TestCase):
         cron_string = "invalid * * * * /usr/bin/find"
         with self.assertRaises(SystemExit):
             CronParser(cron_string)
+
 
 if __name__ == "__main__":
     unittest.main()
