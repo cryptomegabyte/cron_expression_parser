@@ -9,58 +9,50 @@ This application takes a cron string as input and outputs a table showing the ti
 
 ## Installation
 
-To install the application, run the following command:
+Create a Virtual Environment
+Before installing the requirements, it's recommended to create a virtual environment to isolate the dependencies of this project. Here's how to create a virtual environment using python -m venv:
+
+```bash
+python -m venv venv
+```
+
+This will create a new virtual environment in a directory named `venv`.
+
+## Activate the Virtual Environment
+
+To activate the virtual environment, run the following command:
+
+```bash
+source venv/bin/activate
+```
+
+On Windows, use the following command instead:
+
+```bash
+venv\Scripts\activate
+```
+
+## Install Requirements
+
+Once the virtual environment is activated, you can install the requirements using the following command:
+
 ```bash
 pip install -r requirements.txt
 ```
 
 ## Usage
-
-To run the application, use the following command:
-
-```bash
-python src/cli/main.py <cron_string>
-```
-
-## Example
-
-Here's an example usage of the application:
-
-```bash
-python src/cli/main.py "*/15 0 1,15 * 1-5 /usr/bin/find"
-```
-
-This will ouput the following table:
-
-```bash
-
-minute  0 15 30 45
-hour    0
-day of month  1 15
-month  1 2 3 4 5 6 7 8 9 10 11 12
-day of week  1 2 3 4 5
-command  /usr/bin/find
-
-```
+See [usage.md][1] for instructions on how to use the application.
 
 ## Development
-
 To contribute to the development of this application, please fork this repository and submit a pull request with your changes.
 
 ## Testing
-
 To run the tests, use the following command:
 
 ```bash
-python -m unittest discover -s src/tests
+make test
 ```
 
-### License
+By adding this section, we can help users set up a virtual environment and avoid potential issues with dependency conflicts.
 
-This application is licensed under the [MIT License][1].
-
-### Authors
-
-Ali Kayani
-
-[1]: https://opensource.org/license/mit
+[1]: docs/usage.md
