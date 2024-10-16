@@ -4,7 +4,13 @@ from tabulate import tabulate
 from src.cron_parser.parser import CronParser
 
 
-def main():
+def main() -> None:
+    """
+    Main function for the command-line interface.
+
+    This function parses the command-line arguments and passes the cron string to
+    the CronParser. It then prints the expanded fields as a table.
+    """
     try:
         parser = argparse.ArgumentParser(description="Cron Expression Parser")
         parser.add_argument("cron_string", help="Cron string to parse")
