@@ -53,6 +53,4 @@ To run the tests, use the following command:
 make test
 ```
 
-By adding this section, we can help users set up a virtual environment and avoid potential issues with dependency conflicts.
-
 [1]: docs/usage.md
