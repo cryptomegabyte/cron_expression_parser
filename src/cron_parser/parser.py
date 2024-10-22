@@ -3,13 +3,14 @@ from typing import Dict, List
 
 
 class CronParser:
+
     def __init__(self, cron_string: str) -> None:
         """
         Initializes the CronParser with a cron string.
 
-        The cron string should be a string consisting of five space-separated fields:
-        minute, hour, day of month, month, and day of week. The string should also
-        include a command as the sixth field.
+        The cron string should be a string consisting of five or six space-separated fields:
+        minute, hour, day of month, month, day of week, and optionally year. The string should
+        also include a command as the seventh field.
 
         If the cron string is invalid, a ValueError is raised.
         """
@@ -25,23 +26,32 @@ class CronParser:
         Parses the cron string into a dictionary of fields.
 
         The dictionary contains the fields "minute", "hour", "day of month", "month",
-        "day of week", and "command". Each field is a list of strings, where each string
-        is a value for the corresponding field.
+        "day of week", "year" (if present), and "command". Each field is a list of strings,
+        where each string is a value for the corresponding field.
 
         If the cron string is invalid, a ValueError is raised.
         """
         fields = self.cron_string.split()
-        if len(fields) != 6:
+        if len(fields) < 6 or len(fields) > 7:
             raise ValueError("Invalid cron string")
 
-        return {
+        result = {
             "minute": self.parse_field(fields[0], 0, 59),
             "hour": self.parse_field(fields[1], 0, 23),
             "day_of_month": self.parse_field(fields[2], 1, 31),
             "month": self.parse_field(fields[3], 1, 12),
             "day_of_week": self.parse_field(fields[4], 0, 6),
-            "command": fields[5],
         }
+
+        if len(fields) == 7:
+            result["year"] = [fields[5]]
+        else:
+            result["year"] = ["*"]  # default to "*" if year is not present
+
+        result["command"] = fields[-1]
+
+        return result
+
 
     def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
         """
@@ -99,10 +109,10 @@ class CronParser:
 
     def get_expanded_fields(self) -> Dict[str, List[str]]:
         """
-        Retrieves the expanded fields from the parsed cron string.
+        Returns the expanded fields as a dictionary.
 
-        Returns:
-            Dict[str, List[str]]: A dictionary containing the expanded fields where each key represents a field
-            (e.g., "minute", "hour") and the corresponding value is a list of strings representing the values of that field.
+        The dictionary contains the fields "minute", "hour", "day of month", "month",
+        "day of week", "year", and "command". Each field is a list of strings, where each string
+        is a value for the corresponding field.
         """
         return self.fields

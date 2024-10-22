@@ -26,6 +26,7 @@ def main() -> None:
             ["day of month", ", ".join(expanded_fields["day_of_month"])],
             ["month", ", ".join(expanded_fields["month"])],
             ["day of week", ", ".join(expanded_fields["day_of_week"])],
+            ["year", ", ".join(expanded_fields["year"])],
             ["command", expanded_fields["command"]],
         ]
 
