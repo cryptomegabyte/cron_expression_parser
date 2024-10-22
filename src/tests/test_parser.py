@@ -29,12 +29,6 @@ class TestCronParser(unittest.TestCase):
     def test_parse_fields_with_year(self) -> None:
         """
         Tests that the fields are parsed correctly when a year is present.
-
-        The expanded fields should be a list of strings, where each string is a value
-        for the corresponding field. The values should be in increasing order.
-
-        For example, the minute field should be a list of strings "0" through "59", and
-        the day of week field should be a list of strings "0" through "6".
         """
         cron_string = "* * * * * 2024 /usr/bin/find"
         cron_parser = CronParser(cron_string)
@@ -49,7 +43,18 @@ class TestCronParser(unittest.TestCase):
         self.assertEqual(expanded_fields["day_of_week"], [str(i) for i in range(7)])
         self.assertEqual(expanded_fields["year"], ["2024"])
         self.assertEqual(expanded_fields["command"], "/usr/bin/find")
-    
+
+        # Test invalid year
+        cron_string = "* * * * * 1969 /usr/bin/find"
+        with self.assertRaises(SystemExit) as cm:
+            CronParser(cron_string)
+        self.assertEqual(cm.exception.code, 1)
+
+        # Test valid year
+        cron_string = "* * * * * 1978 /usr/bin/find"
+        cron_parser = CronParser(cron_string)
+        expanded_fields = cron_parser.get_expanded_fields()
+        self.assertEqual(expanded_fields["year"], ["1978"])
 
     def test_parse_field_with_step(self) -> None:
         """

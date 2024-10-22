@@ -20,7 +20,6 @@ class CronParser:
         except ValueError as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
-
     def parse_fields(self) -> Dict[str, List[str]]:
         """
         Parses the cron string into a dictionary of fields.
@@ -44,14 +43,20 @@ class CronParser:
         }
 
         if len(fields) == 7:
-            result["year"] = [fields[5]]
+            year = fields[5]
+            try:
+                year_value = int(year)
+                if year_value < 1970 or year_value > 2099:
+                    raise ValueError("Year must be between 1970 and 2099")
+                result["year"] = [str(year_value)]
+            except ValueError:
+                raise ValueError("Invalid year value")
         else:
             result["year"] = ["*"]  # default to "*" if year is not present
 
         result["command"] = fields[-1]
 
         return result
-
 
     def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
         """
