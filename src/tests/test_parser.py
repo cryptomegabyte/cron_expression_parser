@@ -24,7 +24,7 @@ class TestCronParser(unittest.TestCase):
         )
         self.assertEqual(expanded_fields["month"], [str(i) for i in range(1, 13)])
         self.assertEqual(expanded_fields["day_of_week"], [str(i) for i in range(7)])
-        self.assertEqual(expanded_fields["command"], "/usr/bin/find")
+        self.assertEqual(expanded_fields["command"], ["/usr/bin/find"])
 
     def test_parse_field_with_step(self) -> None:
         """
@@ -102,6 +102,13 @@ class TestCronParser(unittest.TestCase):
         cron_string = "invalid * * * * /usr/bin/find"
         with self.assertRaises(SystemExit):
             CronParser(cron_string)
+
+    def test_command_with_args(self) -> None:
+        cron_string = "* * * * * main_cmd arg1 value1 arg2 value2"
+        cron_parser = CronParser(cron_string)
+        expanded_fields = cron_parser.get_expanded_fields()
+
+        self.assertEqual(expanded_fields["command"], "main_cmd arg1:value1 arg2:value2")
 
 
 if __name__ == "__main__":

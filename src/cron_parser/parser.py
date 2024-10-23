@@ -20,19 +20,24 @@ class CronParser:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
+    @staticmethod
+    def process_command(command: List[str]) -> str:
+        main_command = command[0]
+        sub_commands = []
+        for i in range(1, len(command), 2):
+            sub_commands.append(f'{command[i].replace("-", "")}:{command[i + 1]}')
+        return f'{main_command} {" ".join(sub_commands)}'
+
     def parse_fields(self) -> Dict[str, List[str]]:
-        """
-        Parses the cron string into a dictionary of fields.
-
-        The dictionary contains the fields "minute", "hour", "day of month", "month",
-        "day of week", and "command". Each field is a list of strings, where each string
-        is a value for the corresponding field.
-
-        If the cron string is invalid, a ValueError is raised.
-        """
+        # ...
         fields = self.cron_string.split()
-        if len(fields) != 6:
+        if len(fields) < 6:
             raise ValueError("Invalid cron string")
+
+        # Process command arguments
+        command = fields[5:]
+        if len(command) > 1:
+            command = self.process_command(command)
 
         return {
             "minute": self.parse_field(fields[0], 0, 59),
@@ -40,7 +45,7 @@ class CronParser:
             "day_of_month": self.parse_field(fields[2], 1, 31),
             "month": self.parse_field(fields[3], 1, 12),
             "day_of_week": self.parse_field(fields[4], 0, 6),
-            "command": fields[5],
+            "command": command
         }
 
     def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
@@ -98,11 +103,12 @@ class CronParser:
             raise ValueError(f"Invalid field value: {field}")
 
     def get_expanded_fields(self) -> Dict[str, List[str]]:
-        """
-        Retrieves the expanded fields from the parsed cron string.
-
-        Returns:
-            Dict[str, List[str]]: A dictionary containing the expanded fields where each key represents a field
-            (e.g., "minute", "hour") and the corresponding value is a list of strings representing the values of that field.
-        """
-        return self.fields
+        # ...
+        return {
+            "minute": self.fields["minute"],
+            "hour": self.fields["hour"],
+            "day_of_month": self.fields["day_of_month"],
+            "month": self.fields["month"],
+            "day_of_week": self.fields["day_of_week"],
+            "command": self.fields["command"]  # Return the formatted command string
+        }
