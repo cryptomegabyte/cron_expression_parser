@@ -15,21 +15,21 @@ class CronParser:
         """
         try:
             self.cron_string = cron_string
+            self.month_names = {
+                "jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
+                "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12
+            }
+
+            self.day_names = {
+                "sun": 0, "mon": 1, "tue": 2, "wed": 3, "thu": 4, "fri": 5, "sat": 6
+            }
+
             self.fields = self.parse_fields()
         except ValueError as e:
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
-    def parse_fields(self) -> Dict[str, List[str]]:
-        """
-        Parses the cron string into a dictionary of fields.
-
-        The dictionary contains the fields "minute", "hour", "day of month", "month",
-        "day of week", and "command". Each field is a list of strings, where each string
-        is a value for the corresponding field.
-
-        If the cron string is invalid, a ValueError is raised.
-        """
+    def parse_fields(self):
         fields = self.cron_string.split()
         if len(fields) != 6:
             raise ValueError("Invalid cron string")
@@ -38,12 +38,11 @@ class CronParser:
             "minute": self.parse_field(fields[0], 0, 59),
             "hour": self.parse_field(fields[1], 0, 23),
             "day_of_month": self.parse_field(fields[2], 1, 31),
-            "month": self.parse_field(fields[3], 1, 12),
-            "day_of_week": self.parse_field(fields[4], 0, 6),
+            "month": self.parse_field(fields[3], 1, 12, "month"),
+            "day_of_week": self.parse_field(fields[4], 0, 6, "day_of_week"),
             "command": fields[5],
         }
-
-    def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
+    def parse_field(self, field: str, min_value: int, max_value: int, field_name: str = None) -> List[str]:
         """
         Parses a field in the cron string.
 
@@ -61,6 +60,7 @@ class CronParser:
             field (str): The field to parse.
             min_value (int): The minimum value of the range.
             max_value (int): The maximum value of the range.
+            field_name (str): The name of the field (e.g. "month", "day_of_week").
 
         Returns:
             List[str]: A list of strings, where each string is a value for the corresponding field.
@@ -87,7 +87,22 @@ class CronParser:
 
         if "," in field:
             values = field.split(",")
-            return [value for value in values if min_value <= int(value) <= max_value]
+            if field_name == "day_of_week":
+                return [str(self.day_names[value]) for value in values if value in self.day_names]
+            else:
+                return [value for value in values if min_value <= int(value) <= max_value]
+
+        if field_name == "month":
+            if field in self.month_names:
+                return [str(self.month_names[field])]
+            else:
+                raise ValueError(f"Invalid month name: {field}")
+
+        if field_name == "day_of_week":
+            if field in self.day_names:
+                return [str(self.day_names[field])]
+            else:
+                raise ValueError(f"Invalid day of week name: {field}")
 
         try:
             value = int(field)
@@ -95,7 +110,7 @@ class CronParser:
                 raise ValueError
             return [field]
         except ValueError:
-            raise ValueError(f"Invalid field value: {field}")
+            raise ValueError(f"Invalid value for field: {field}")
 
     def get_expanded_fields(self) -> Dict[str, List[str]]:
         """

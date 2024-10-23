@@ -25,13 +25,13 @@ class TestCLI(unittest.TestCase):
     def test_main_invalid_cron_string(self) -> None:
         """
         Tests that the main function exits the program with an error when given an invalid cron string.
-
-        The error message should include the text "Invalid field value: invalid".
+        
+        The error message should include the text "Invalid value for field: invalid".
         """
         with patch("sys.stderr", new=StringIO()) as fake_stderr:
             with self.assertRaises(SystemExit):
                 main()
-            self.assertIn("Invalid field value: invalid", fake_stderr.getvalue())
+            self.assertIn("Error: Invalid value for field: invalid", fake_stderr.getvalue())
 
     @patch("sys.argv", ["main.py"])
     def test_main_missing_cron_string(self) -> None:

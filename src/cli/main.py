@@ -30,6 +30,9 @@ def main() -> None:
         ]
 
         print(tabulate(table, headers="firstrow", tablefmt="grid"))
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(f"Invalid value for field: {e}")
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)

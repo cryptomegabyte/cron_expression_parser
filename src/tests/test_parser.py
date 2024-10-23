@@ -103,6 +103,46 @@ class TestCronParser(unittest.TestCase):
         with self.assertRaises(SystemExit):
             CronParser(cron_string)
 
+    def test_parse_field_day_of_week(self) -> None:
+        """
+        Tests that a field with a list of day of week values (e.g. "mon,tue,wed") is parsed correctly.
+
+        The expanded field should be a list of strings, where each string is a value
+        for the corresponding field. The values should be in increasing order, and
+        should be within the given list.
+
+        For example, the day of week field should be a list of strings "1", "2", and "3".
+        """
+        parser = CronParser("0 0 * * mon,tue,wed /usr/bin/find")
+        self.assertEqual(parser.parse_field("mon,tue,wed", 0, 6, "day_of_week"), ["1", "2", "3"])
+
+    def test_parse_field_day_of_week_single_value(self) -> None:
+        
+        """
+        Tests that a field with a single day of week value (e.g. "mon") is parsed correctly.
+
+        The expanded field should be a list of strings, where each string is a value
+        for the corresponding field. The values should be in increasing order, and
+        should be within the given value.
+
+        For example, the day of week field should be a list of strings "1".
+        """
+        parser = CronParser("0 0 * * mon /usr/bin/find")
+        self.assertEqual(parser.parse_field("mon", 0, 6, "day_of_week"), ["1"])
+
+    def test_get_expanded_fields_day_of_week(self) -> None:
+        """
+        Tests that the get_expanded_fields method correctly expands a field with multiple day of week values (e.g. "mon,tue,wed").
+
+        The expanded field for "day_of_week" should be a list of strings representing the corresponding numeric values for the days of the week. The values should be in increasing order.
+
+        For example, the day of week field should be a list of strings "1", "2", and "3" for "mon", "tue", and "wed" respectively.
+        """
+        parser = CronParser("0 0 * * mon,tue,wed /usr/bin/find")
+        expanded_fields = parser.get_expanded_fields()
+        self.assertEqual(expanded_fields["day_of_week"], ["1", "2", "3"])
+    
+
 
 if __name__ == "__main__":
     unittest.main()
