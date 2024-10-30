@@ -48,6 +48,21 @@ class TestCLI(unittest.TestCase):
                 fake_stderr.getvalue(),
             )
 
+    @patch("sys.argv", ["main.py", "*/15 0 1,15 * 1-5 /usr/bin/find", "-n", "5"])
+    def test_main_with_n(self) -> None:
+        """
+        Tests that the main function prints the expected output when given a valid cron string and -n option.
+        """
+        with patch("sys.stdout", new=StringIO()) as fake_stdout:
+            main()
+            self.assertIn("minute", fake_stdout.getvalue())
+            self.assertIn("hour", fake_stdout.getvalue())
+            self.assertIn("day of month", fake_stdout.getvalue())
+            self.assertIn("month", fake_stdout.getvalue())
+            self.assertIn("day of week", fake_stdout.getvalue())
+            self.assertIn("command", fake_stdout.getvalue())
+            self.assertIn("Occurrence", fake_stdout.getvalue())
+            self.assertIn("Date and Time", fake_stdout.getvalue())
 
 if __name__ == "__main__":
     unittest.main()

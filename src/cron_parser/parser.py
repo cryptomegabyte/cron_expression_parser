@@ -1,5 +1,6 @@
 import sys
 from typing import Dict, List
+from datetime import datetime
 
 
 class CronParser:
@@ -106,3 +107,39 @@ class CronParser:
             (e.g., "minute", "hour") and the corresponding value is a list of strings representing the values of that field.
         """
         return self.fields
+    
+    def find_next_n_occurrences(self, n: int) -> List[str]:
+        """
+        Finds the next n occurrences of the cron job.
+
+        Args:
+            n (int): The number of occurrences to find.
+
+        Returns:
+            List[str]: A list of the next n occurrences in the format YYYY-MM-DD HH:MM.
+        """
+
+        current_time = datetime.now()
+        current_year = current_time.year
+        next_occurrences = []
+
+        month_list = [int(month) for month in self.fields["month"]]
+        day_of_month_list = [int(day) for day in self.fields["day_of_month"]]
+
+        while len(next_occurrences) < n:
+            for month in month_list:
+                if current_time.year == current_year and current_time.month < month:
+                    continue
+                for day_of_month in day_of_month_list:
+                    for hour in self.fields["hour"]:
+                        for minute in self.fields["minute"]:
+                            try:
+                                next_time = datetime(current_year, month, day_of_month, int(hour), int(minute))
+                                if current_time <= next_time and next_time.weekday() + 1 in set(int(day) for day in self.fields["day_of_week"]):
+                                    next_occurrences.append(next_time.strftime('%Y-%m-%d %H:%M'))
+                                    if len(next_occurrences) == n:
+                                        return next_occurrences
+                            except ValueError:
+                                continue
+            current_year += 1
+        return next_occurrences

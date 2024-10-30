@@ -103,6 +103,18 @@ class TestCronParser(unittest.TestCase):
         with self.assertRaises(SystemExit):
             CronParser(cron_string)
 
+    def test_find_next_n_occurrences(self) -> None:
+        """
+        Tests that the find_next_n_occurrences method returns the correct number of occurrences.
+        """
+        cron_string = "*/15 0 1,15 * 1-5 /usr/bin/find"
+        cron_parser = CronParser(cron_string)
+        next_occurrences = cron_parser.find_next_n_occurrences(5)
+        self.assertEqual(len(next_occurrences), 5)
+
+        next_occurrences = cron_parser.find_next_n_occurrences(10)
+        self.assertEqual(len(next_occurrences), 10)
+
 
 if __name__ == "__main__":
     unittest.main()
