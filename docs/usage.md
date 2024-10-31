@@ -21,6 +21,18 @@ This will run the program with a default cron string. To specify a custom cron s
 python -m src.cli.main "<cron_string>"
 ```
 
+To enable logging, use the following command:
+
+```bash
+make logs
+```
+
+This will run the program with a default cron string and enable logging. To specify a custom cron string with logging, you can use the following command:
+
+```bash
+python -m src.cli.main "<cron_string>" --log
+```
+
 ## Running Tests
 To run the tests, use the following command:
 
