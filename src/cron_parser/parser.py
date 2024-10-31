@@ -1,4 +1,5 @@
 import sys
+import logging
 from typing import Dict, List
 
 
@@ -15,8 +16,10 @@ class CronParser:
         """
         try:
             self.cron_string = cron_string
+            logging.info(f"Parsing cron string: {cron_string}")
             self.fields = self.parse_fields()
         except ValueError as e:
+            logging.error(f"Error: {e}")
             print(f"Error: {e}", file=sys.stderr)
             sys.exit(1)
 
@@ -30,11 +33,12 @@ class CronParser:
 
         If the cron string is invalid, a ValueError is raised.
         """
+        logging.info("Parsing fields...")
         fields = self.cron_string.split()
         if len(fields) != 6:
-            raise ValueError("Invalid cron string")
+            raise ValueError("Invalid cron string: expected 6 fields")
 
-        return {
+        parsed_fields = {
             "minute": self.parse_field(fields[0], 0, 59),
             "hour": self.parse_field(fields[1], 0, 23),
             "day_of_month": self.parse_field(fields[2], 1, 31),
@@ -42,6 +46,10 @@ class CronParser:
             "day_of_week": self.parse_field(fields[4], 0, 6),
             "command": fields[5],
         }
+
+        logging.info("Parsed fields:")
+        logging.info(parsed_fields)
+        return parsed_fields
 
     def parse_field(self, field: str, min_value: int, max_value: int) -> List[str]:
         """
@@ -65,6 +73,9 @@ class CronParser:
         Returns:
             List[str]: A list of strings, where each string is a value for the corresponding field.
         """
+
+        logging.info(f"Parsing field: {field}")
+
         if field == "*":
             return [str(i) for i in range(min_value, max_value + 1)]
 

@@ -3,6 +3,9 @@
 run:
 	python -m src.cli.main "*/15 0 1,15 * 1-5 /usr/bin/find"
 
+logs:
+	python -m src.cli.main "*/15 0 1,15 * 1-5 /usr/bin/find" --log
+
 test:
 	pytest
 
