@@ -37,7 +37,7 @@ class TestCLI(unittest.TestCase):
     def test_main_missing_cron_string(self) -> None:
         """
         Test that the main function exits the program with an error when the cron string argument is missing.
-        
+
         The error message should indicate that the argument 'cron_string' is required.
         """
         with patch("sys.stderr", new=StringIO()) as fake_stderr:
