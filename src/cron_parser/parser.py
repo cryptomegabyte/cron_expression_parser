@@ -91,18 +91,14 @@ class CronParser:
                 return [str(self.day_names[value]) for value in values if value in self.day_names]
             else:
                 return [value for value in values if min_value <= int(value) <= max_value]
+        elif field_name == "day_of_week" and field in self.day_names:
+            return [str(self.day_names[field])]
 
         if field_name == "month":
             if field in self.month_names:
                 return [str(self.month_names[field])]
             else:
                 raise ValueError(f"Invalid month name: {field}")
-
-        if field_name == "day_of_week":
-            if field in self.day_names:
-                return [str(self.day_names[field])]
-            else:
-                raise ValueError(f"Invalid day of week name: {field}")
 
         try:
             value = int(field)
